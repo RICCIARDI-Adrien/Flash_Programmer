@@ -17,7 +17,7 @@ void FlashInitialize(void)
 	unsigned short Device_ID;
 
 	// Read known IDs
-	FlashONFIReadID(&Manufacturer_ID, &Device_ID);
+	FlashReadID(&Manufacturer_ID, &Device_ID);
 	if (Manufacturer_ID != 0xEF) while (1);
 	if (Device_ID != 0x4017) while (1);
 }

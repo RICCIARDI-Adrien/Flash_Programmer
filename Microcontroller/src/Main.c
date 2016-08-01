@@ -165,7 +165,7 @@ static void CommandReadFlash(void)
 		// Read at most one sector at a time
 		if (Bytes_Count > FLASH_SECTOR_SIZE) Bytes_To_Read = FLASH_SECTOR_SIZE;
 		else Bytes_To_Read = (unsigned short) Bytes_Count;
-		FlashONFIReadBytes(Address, Bytes_To_Read, Buffer);
+		FlashReadBytes(Address, Bytes_To_Read, Buffer);
 
 		// Send the data
 		for (i = 0; i < Bytes_To_Read; i++) UARTWriteByte(Buffer[i]);
@@ -175,7 +175,6 @@ static void CommandReadFlash(void)
 	}
 }
 
-#if 0
 /** Write data to the flash memory. */
 static void CommandWriteFlash(void)
 {
@@ -212,7 +211,7 @@ static void CommandWriteFlash(void)
 		Address += Bytes_To_Write;
 	}
 }
-#endif
+
 //-------------------------------------------------------------------------------------------------
 // Entry point
 //-------------------------------------------------------------------------------------------------
@@ -259,7 +258,7 @@ void main(void)
 				break;
 
 			case COMMAND_WRITE_FLASH:
-			//	CommandWriteFlash();
+				CommandWriteFlash();
 				break;
 
 			default:

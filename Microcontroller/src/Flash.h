@@ -1,5 +1,5 @@
 /** @file Flash.h
- * Contain all standard ONFI commands (implemented in Flash.c) and all commands a specific flash must support (implemented in the flash specific source file).
+ * Contain some common commands (implemented in Flash.c) and all commands a specific flash must support (implemented in the flash specific source file).
  * @author Adrien RICCIARDI
  */
 #ifndef H_FLASH_H
@@ -41,7 +41,7 @@
  * @param Pointer_Manufacturer_ID On output, contain the Manufacturer ID.
  * @param Pointer_Device_ID On output, contain the Device ID.
  */
-void FlashONFIReadID(unsigned char *Pointer_Manufacturer_ID, unsigned short *Pointer_Device_ID);
+void FlashReadID(unsigned char *Pointer_Manufacturer_ID, unsigned short *Pointer_Device_ID);
 
 /** Read a specified number of bytes from the specified address.
  * @param Address The address to start reading from (only 3-byte addresses are supported).
@@ -49,7 +49,7 @@ void FlashONFIReadID(unsigned char *Pointer_Manufacturer_ID, unsigned short *Poi
  * @param Pointer_Buffer On output, contain the read data.
  * @note This function can read up to the XRAM size bytes of data.
  */
-void FlashONFIReadBytes(unsigned long Address, unsigned short Bytes_Count, unsigned char xdata *Pointer_Buffer);
+void FlashReadBytes(unsigned long Address, unsigned short Bytes_Count, unsigned char xdata *Pointer_Buffer);
 
 /** Write a specified number of bytes to the specified address.
  * @param Address The address to start writing to.
@@ -68,8 +68,5 @@ void FlashEraseSector(unsigned long Address);
  * @note This function must be implemented in the specific flash file.
  */
 void FlashInitialize(void);
-
-unsigned char FlashIsWriteOperationFinished(void);
-unsigned char FlashIsEraseOperationFinished(void);
 
 #endif
