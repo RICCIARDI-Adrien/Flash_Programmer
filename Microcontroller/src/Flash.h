@@ -16,6 +16,11 @@
 
 	/** A sector size in bytes. */
 	#define FLASH_SECTOR_SIZE 4096
+
+	/** A page size in bytes. */
+	#define FLASH_PAGE_SIZE 256
+	/** The corresponding bit mask. */
+	#define FLASH_PAGE_SIZE_BIT_MASK 0x000000FFUL
 #endif
 
 #if CONFIGURATION_FLASH_SELECT_MX25L25635F
@@ -24,6 +29,11 @@
 
 	/** A sector size in bytes. */
 	#define FLASH_SECTOR_SIZE 4096
+
+	/** A page size in bytes. */
+	#define FLASH_PAGE_SIZE 256
+	/** The corresponding bit mask. */
+	#define FLASH_PAGE_SIZE_BIT_MASK 0x000000FFUL
 #endif
 
 #if CONFIGURATION_FLASH_SELECT_W25Q64CV
@@ -32,6 +42,11 @@
 
 	/** A sector size in bytes. */
 	#define FLASH_SECTOR_SIZE 4096
+
+	/** A page size in bytes. */
+	#define FLASH_PAGE_SIZE 256
+	/** The corresponding bit mask. */
+	#define FLASH_PAGE_SIZE_BIT_MASK 0x000000FFUL
 #endif
 
 //-------------------------------------------------------------------------------------------------

@@ -84,29 +84,79 @@ void FlashReadBytes(unsigned long Address, unsigned short Bytes_Count, unsigned 
 
 void FlashWriteBytes(unsigned long Address, unsigned short Bytes_Count, unsigned char xdata *Pointer_Buffer)
 {
-	while (Bytes_Count > 0)
+	unsigned short Bytes_To_Write;
+
+	// The address is aligned on a page, so use the page as the default write unit to speed operations
+	if ((Address & FLASH_PAGE_SIZE_BIT_MASK) == 0)
 	{
-		FlashEnableWriting();
+		while (Bytes_Count > 0)
+		{
+			// Determine how many bytes to write
+			if (Bytes_Count > FLASH_PAGE_SIZE) Bytes_To_Write = FLASH_PAGE_SIZE;
+			else Bytes_To_Write = Bytes_Count;
 
-		// Write a byte
-		SPISetSlaveSelectState(1);
-		// Send the command
-		SPITransferByte(0x02);
-		// Send the address
-		SPITransferByte(Address >> 16);
-		SPITransferByte(Address >> 8);
-		SPITransferByte(Address);
-		// Send the byte to write
-		SPITransferByte(*Pointer_Buffer);
-		// Initiate the write cycle
-		SPISetSlaveSelectState(0);
+			// Prepare write operation
+			FlashEnableWriting();
 
-		// Wait for the write cycle to terminate
-		while (FlashReadStatusRegister() & 1);
+			SPISetSlaveSelectState(1);
 
-		Address++;
-		Bytes_Count--;
-		Pointer_Buffer++;
+			// Send the command
+			SPITransferByte(0x02);
+
+			// Send the address
+			SPITransferByte(Address >> 16);
+			SPITransferByte(Address >> 8);
+			SPITransferByte(Address);
+
+			// Send up to a page to the flash
+			while (Bytes_To_Write > 0)
+			{
+				// Send the byte to write
+				SPITransferByte(*Pointer_Buffer);
+
+				Address++;
+				Bytes_To_Write--;
+				Bytes_Count--;
+				Pointer_Buffer++;
+			}
+
+			// Initiate the write cycle
+			SPISetSlaveSelectState(0);
+
+			// Wait for the write cycle to terminate
+			while (FlashReadStatusRegister() & 1);
+		}
+	}
+	else
+	{
+		while (Bytes_Count > 0)
+		{
+			FlashEnableWriting();
+
+			// Write a byte
+			SPISetSlaveSelectState(1);
+
+			// Send the command
+			SPITransferByte(0x02);
+
+			// Send the address
+			SPITransferByte(Address >> 16);
+			SPITransferByte(Address >> 8);
+			SPITransferByte(Address);
+
+			// Send the byte to write
+			SPITransferByte(*Pointer_Buffer);
+
+			// Initiate the write cycle
+			SPISetSlaveSelectState(0);
+
+			// Wait for the write cycle to terminate
+			while (FlashReadStatusRegister() & 1);
+
+			Address++;
+			Bytes_Count--;
+			Pointer_Buffer++;
+		}
 	}
 }
 
