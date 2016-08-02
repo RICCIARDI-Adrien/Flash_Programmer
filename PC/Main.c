@@ -145,9 +145,11 @@ static void CommandReadFlash(unsigned int Address, unsigned int Bytes_Count, cha
 			printf("Error : could not write the byte %d.\n", i);
 			break;
 		}
+
+		printf("Read bytes : %u/%u\r", i + 1, Bytes_Count);
 	}
 	
-	printf("Read bytes : %u/%u.\n", i, Bytes_Count);
+	printf("\n");
 	fclose(File);
 }
 
@@ -202,9 +204,11 @@ static void CommandWriteFlash(unsigned int Address, char *String_File_Name)
 			printf("Error : could not read the %u byte of the file.\n", i);
 			break;
 		}
+
+		printf("Written bytes : %u/%u\r", i + 1, Bytes_Count);
 	}
 	
-	printf("Written bytes : %u/%u.\n", i, Bytes_Count);
+	printf("\n");
 	fclose(File);
 }
 
