@@ -160,23 +160,48 @@ void FlashWriteBytes(unsigned long Address, unsigned short Bytes_Count, unsigned
 	}
 }
 
-void FlashEraseSector(unsigned long Address)
+void FlashEraseSectors(unsigned long Address, unsigned short Sectors_Count)
 {
-	FlashEnableWriting();
+	// Use the "erase chip" command if the whole flash must be erased
+	if ((Address == 0) && (Sectors_Count == FLASH_TOTAL_SIZE / FLASH_SECTOR_SIZE))
+	{
+		// Prepare for erase operation
+		FlashEnableWriting();
+		SPISetSlaveSelectState(1);
 
-	SPISetSlaveSelectState(1);
+		// Send the command
+		SPITransferByte(0x60);
 
-	// Send the command
-	SPITransferByte(0x20);
+		// Initiate the erase cycle
+		SPISetSlaveSelectState(0);
 
-	// Send the address
-	SPITransferByte(Address >> 16);
-	SPITransferByte(Address >> 8);
-	SPITransferByte(Address);
+		// Wait for the erase cycle to terminate
+		while (FlashReadStatusRegister() & 1);
+	}
+	else
+	{
+		while (Sectors_Count > 0)
+		{
+			// Prepare for erase operation
+			FlashEnableWriting();
+			SPISetSlaveSelectState(1);
 
-	// Initiate the erase cycle
-	SPISetSlaveSelectState(0);
+			// Send the command
+			SPITransferByte(0x20);
 
-	// Wait for the write cycle to terminate
-	while (FlashReadStatusRegister() & 1);
+			// Send the address
+			SPITransferByte(Address >> 16);
+			SPITransferByte(Address >> 8);
+			SPITransferByte(Address);
+
+			// Initiate the erase cycle
+			SPISetSlaveSelectState(0);
+
+			// Wait for the erase cycle to terminate
+			while (FlashReadStatusRegister() & 1);
+
+			Sectors_Count--;
+			Address += FLASH_SECTOR_SIZE;
+		}
+	}
 }

@@ -74,10 +74,11 @@ void FlashReadBytes(unsigned long Address, unsigned short Bytes_Count, unsigned 
  */
 void FlashWriteBytes(unsigned long Address, unsigned short Bytes_Count, unsigned char xdata *Pointer_Buffer);
 
-/** Erase a flash sector.
- * @param Address Any address in the sector to erase.
+/** Erase the specified amount of sectors.
+ * @param Address The beginning address of the first sector to erase.
+ * @param Sectors_Count How many sectors to erase.
  */
-void FlashEraseSector(unsigned long Address);
+void FlashEraseSectors(unsigned long Address, unsigned short Sectors_Count);
 
 /** Do all needed memory initialization. The function will hang if the flash can't be initialized properly.
  * @note This function must be implemented in the specific flash file.

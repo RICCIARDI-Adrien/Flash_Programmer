@@ -179,13 +179,19 @@ static void CommandReadFlash(void)
 static void CommandWriteFlash(void)
 {
 	unsigned long Address, Bytes_Count;
-	unsigned short i, Bytes_To_Write;
+	unsigned short i, Bytes_To_Write, Sectors_To_Erase_Count;
 
 	// Receive the starting address
 	Address = UARTReadDoubleWord();
 
 	// Receive the data to flash size
 	Bytes_Count = UARTReadDoubleWord();
+
+	// Erase the required sectors
+	Sectors_To_Erase_Count = Bytes_Count / FLASH_SECTOR_SIZE;
+	if (Bytes_Count % FLASH_SECTOR_SIZE != 0) Sectors_To_Erase_Count++; // Erase one more sector if some bytes have to been written to it
+	FlashEraseSectors(Address, Sectors_To_Erase_Count);
+	UARTWriteByte(COMMAND_MICROCONTROLLER_READY); // Used as flow control
 
 	// Receive data from the UART and write it to the flash
 	while (Bytes_Count > 0)
@@ -200,9 +206,6 @@ static void CommandWriteFlash(void)
 			UARTWriteByte(COMMAND_MICROCONTROLLER_READY); // Used as flow control
 			Buffer[i] = UARTReadByte();
 		}
-
-		// Erase the current sector
-		FlashEraseSector(Address);
 
 		// Write the data
 		FlashWriteBytes(Address, Bytes_To_Write, Buffer);

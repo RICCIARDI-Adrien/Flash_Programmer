@@ -189,9 +189,11 @@ static void CommandWriteFlash(unsigned int Address, char *String_File_Name)
 	UARTWriteByte(Bytes_Count >> 8);
 	UARTWriteByte(Bytes_Count);
 	
-	printf("Writing data...\n");
+	printf("Erasing blocks...\n");
+	if (UARTReadByte() != COMMAND_MICROCONTROLLER_READY) printf("Warning : the microcontroller did not send the expected \"ready\" code.\n");
 	
 	// Send the data
+	printf("Writing data...\n");
 	for (i = 0; i < Bytes_Count; i++)
 	{
 		// Wait for the microcontroller to become ready
